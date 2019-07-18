@@ -107,8 +107,36 @@ def write_order_to_json(item, quantity, price, buyer, date):
     'buyer': buyer,
     'date': date
     }
-    with open('orders', 'w') as fn:
-        json.dumps(order_record, fn, sort_keys=True, indent=4)
+    with open('orders.json', 'w') as fn:
+        json.dump(order_record, fn, sort_keys=True, indent=4)
+
+
+"""
+3. Задание на закрепление знаний по модулю yaml . Написать скрипт, автоматизирующий
+сохранение данных в файле YAML-формата. Для этого:
+a. Подготовить данные для записи в виде словаря, в котором первому ключу
+соответствует список, второму — целое число, третьему — вложенный словарь, где
+значение каждого ключа — это целое число с юникод-символом, отсутствующим в
+кодировке ASCII (например, €);
+b. Реализовать сохранение данных в файл формата YAML — например, в файл
+file.yaml . При этом обеспечить стилизацию файла с помощью параметра
+default_flow_style , а также установить возможность работы с юникодом:
+allow_unicode = True ;
+c. Реализовать считывание данных из созданного файла и проверить, совпадают ли они
+с исходными
+"""
+import yaml
+
+
+def save_yaml(data):
+
+    with open('file.yaml', 'w', encoding='utf-8') as fn:
+        yaml.dump(data, fn, default_flow_style=False, allow_unicode=True)
+
+def read_yaml():
+    with open('file.yaml', encoding='utf-8') as fn:
+        # original yaml.load() method is not safe!
+        return yaml.full_load(fn)
 
 if __name__ == '__main__':
     print('Homework 1')
@@ -116,4 +144,15 @@ if __name__ == '__main__':
 
     print('Homework 2')
     r = random.randint(1, 1000)
-    write_order_to_json('item'+str(r), r, 1000-r, 'buyer'+str(r), datetime.date())
+    write_order_to_json('item'+str(r), r, 1000-r, 'buyer'+str(r), str(datetime.datetime.now()))
+
+    print('Homework 3')
+    dict_to_yaml = {'uno': ['one', 2, 'three', 2.0],
+                    'dos': 100500,
+                    'tres': {'1€': 'euro', '2₤': 'pound', '3₽': 'ruble'}
+                    }
+    save_yaml(dict_to_yaml)
+    print('Original dict:')
+    print(dict_to_yaml)
+    print('Restored from yaml')
+    print(read_yaml())
